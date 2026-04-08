@@ -2,20 +2,21 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 
 import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
 const logger = new Logger('Bootstrap');
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const BASE_URL = process.env.BASE_URL || 'api';
+  const config = app.get(ConfigService);
 
   app.enableCors({
-    origin: process.env.ALLOWED_ORIGINS?.split(',') || [],
+    origin: config.get<string>('ALLOWED_ORIGINS')?.split(',') || [],
     credentials: true,
   });
 
-  app.setGlobalPrefix(BASE_URL);
+  app.setGlobalPrefix(config.get<string>('GLOBAL_PREFIX') || 'api');
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -25,9 +26,11 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT ?? 3000;
+  const port = config.get<number>('PORT') ?? 3000;
   await app.listen(port);
 
-  logger.log(`🚀 Application is running on ${await app.getUrl()}/${BASE_URL}`);
+  logger.log(
+    `🚀 Application is running on ${await app.getUrl()}/${config.get<string>('GLOBAL_PREFIX')}`,
+  );
 }
 void bootstrap();
