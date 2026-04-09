@@ -12,11 +12,11 @@ export class OtpResponse extends BaseResponse {
     example: 120000,
     description: 'Время запроса повторного отп кода в мс',
   })
-  retryDelay: number;
+  retryDelay!: number;
 }
 
 @ObjectType()
 export class OtpsResponse extends BaseResponse {
   @Field(() => [Otp])
-  otps: Otp[];
+  otps!: Otp[];
 }

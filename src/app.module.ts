@@ -7,9 +7,8 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import type { ApolloDriverConfig } from '@nestjs/apollo';
 
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { HealthModule } from './health/health.module';
-import { OtpsModule } from './otps';
+import { HealthModule } from './modules/health/health.module';
+import { OtpsModule } from './modules/otps';
 import path from 'path';
 
 @Module({
@@ -51,6 +50,6 @@ import path from 'path';
     OtpsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

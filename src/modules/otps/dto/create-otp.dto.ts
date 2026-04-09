@@ -8,5 +8,5 @@ export class CreateOtpDto {
   @IsNotEmpty()
   @Field(() => String)
   @ApiProperty({ example: '89990009999' })
-  phone: string;
+  phone!: string;
 }

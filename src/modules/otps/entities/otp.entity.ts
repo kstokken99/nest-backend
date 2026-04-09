@@ -16,21 +16,21 @@ import { Types } from 'mongoose';
 export class Otp {
   @Field(() => String)
   @ApiProperty({ description: 'ID', type: String })
-  _id: Types.ObjectId;
+  _id!: Types.ObjectId;
 
   @Field(() => String)
   @ApiProperty({ example: new Date(), description: 'Дата создание отп кода' })
-  created: string;
+  created!: string;
 
   @Field(() => String)
   @Prop({ required: true })
   @ApiProperty({ example: '89990009999', description: 'Номер телефона' })
-  phone: string;
+  phone!: string;
 
   @Field(() => Number)
   @Prop({ required: true })
   @ApiProperty({ example: 650231, description: 'Отп код' })
-  code: number;
+  code!: number;
 
   @Field(() => Number)
   @Prop({ required: true })
@@ -38,7 +38,7 @@ export class Otp {
     example: 120000,
     description: 'Время запроса повторного отп кода',
   })
-  retryDelay: number;
+  retryDelay!: number;
 }
 
 export type OtpDocument = Otp & Document;

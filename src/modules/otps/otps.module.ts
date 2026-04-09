@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Otp, OtpSchema } from './entities';
 import { OtpsController } from './otps.controller';
 import { OtpsMutation } from './otps.mutation';
+import { OtpsQuery } from './otps.query';
 import { OtpsService } from './otps.service';
 
 @Module({
@@ -13,7 +14,7 @@ import { OtpsService } from './otps.service';
     // ScheduleModule.forRoot(),
     MongooseModule.forFeature([{ name: Otp.name, schema: OtpSchema }]),
   ],
-  providers: [OtpsService, OtpsMutation],
+  providers: [OtpsService, OtpsMutation, OtpsQuery],
   exports: [OtpsService],
 })
 export class OtpsModule {}
