@@ -1,4 +1,4 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import {
   HealthCheck,
   HealthCheckService,
@@ -12,33 +12,11 @@ export class HealthController {
     private mongooseHealth: MongooseHealthIndicator,
   ) {}
 
-  @Get('json')
+  @Get()
   @HealthCheck()
   checkJson() {
     return this.health.check([
       async () => this.mongooseHealth.pingCheck('mongodb'),
     ]);
-  }
-
-  @Get()
-  @Render('health')
-  @HealthCheck()
-  async check() {
-    const result = await this.health.check([
-      async () => this.mongooseHealth.pingCheck('mongodb'),
-    ]);
-
-    return {
-      status: result.status,
-      details: result.details,
-      timestamp: new Date().toLocaleDateString('en', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-      }),
-    };
   }
 }

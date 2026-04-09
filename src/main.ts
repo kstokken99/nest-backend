@@ -5,7 +5,6 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
-import hbs from 'hbs';
 import { join } from 'path';
 
 const logger = new Logger('Bootstrap');
@@ -31,7 +30,6 @@ async function bootstrap() {
 
   app.setBaseViewsDir(join(__dirname, 'static/views'));
   app.setViewEngine('hbs');
-  hbs.registerHelper('eq', (a, b) => a === b);
 
   const port = config.get<number>('PORT') ?? 3000;
   await app.listen(port);
