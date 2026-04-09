@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
 import { join } from 'path';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const logger = new Logger('Bootstrap');
 
@@ -26,6 +27,23 @@ async function bootstrap() {
       transform: true,
       transformOptions: { enableImplicitConversion: true },
     }),
+  );
+
+  const restConfig = new DocumentBuilder()
+    .setTitle('@a.ivanov backend 🚀')
+    .setDescription('Апишка для практики')
+    .setVersion('1.0')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
+    .build();
+
+  SwaggerModule.setup(
+    `${config.get<string>('GLOBAL_PREFIX')}/docs`,
+    app,
+    SwaggerModule.createDocument(app, restConfig),
   );
 
   app.setBaseViewsDir(join(__dirname, 'static/views'));
