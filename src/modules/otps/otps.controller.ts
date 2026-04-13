@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RETRY_DELAY } from './constants';
-import { CreateOtpDto } from './dto';
+import { CreateOtpDto, VerifyOtpDto } from './dto';
 import { OtpResponse } from './otps.model';
 import { OtpsService } from './otps.service';
 
@@ -53,5 +53,34 @@ export class OtpsController {
     }
 
     return this.wrapSuccess({ retryDelay: RETRY_DELAY });
+  }
+
+  @Post('/auth/otp/verify')
+  @ApiOperation({ summary: 'Верификация OTP кода' })
+  @ApiResponse({
+    status: 200,
+    description: 'verify otp',
+    type: OtpResponse,
+  })
+  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto): Promise<OtpResponse> {
+    const otp = await this.otpsService.get(verifyOtpDto.phone);
+
+    if (!otp) {
+      return this.wrapSuccess({
+        success: false,
+        message: 'OTP not found',
+      });
+    }
+
+    if (otp.code !== verifyOtpDto.code) {
+      return this.wrapSuccess({
+        success: false,
+        message: 'Invalid code',
+      });
+    }
+
+    await this.otpsService.delete(verifyOtpDto.phone);
+
+    return this.wrapSuccess({ success: true });
   }
 }
