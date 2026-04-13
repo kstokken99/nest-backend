@@ -98,3 +98,20 @@ export class AuthService {
   }
 }
 ```
+
+## Тесты
+
+```bash
+# Юнит тесты (запускаются при commit)
+pnpm run test
+
+# С покрытием
+pnpm run test:cov
+
+# E2E тесты
+pnpm run test:e2e
+```
+
+## Лицензия
+
+ISC
