@@ -2,12 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import Redis from 'ioredis';
 
 import { RETRY_DELAY } from './constants';
-
-export interface OtpData {
-  code: number;
-  retryDelay: number;
-  created: number;
-}
+import type { OtpData } from './models';
 
 @Injectable()
 export class OtpsService {
@@ -41,6 +36,15 @@ export class OtpsService {
       'EX',
       retryDelay,
     );
+  }
+
+  async create(
+    phone: string,
+    retryDelay: number = RETRY_DELAY,
+  ): Promise<OtpData> {
+    const code = Math.floor(100000 + Math.random() * 900000);
+    await this.set(phone, code, retryDelay);
+    return { code, retryDelay, created: Date.now() };
   }
 
   async delete(phone: string): Promise<void> {

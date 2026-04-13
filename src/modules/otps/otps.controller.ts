@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { BaseController } from '@/utils/controllers';
 import { RETRY_DELAY } from './constants';
 import { CreateOtpDto, VerifyOtpDto } from './dto';
 import { OtpResponse } from './otps.model';
@@ -9,17 +10,12 @@ import { OtpsService } from './otps.service';
 
 @ApiTags('☄️ otps')
 @Controller()
-export class OtpsController {
+export class OtpsController extends BaseController {
   constructor(
     private readonly otpsService: OtpsService,
     private readonly config: ConfigService,
-  ) {}
-
-  private wrapSuccess(data: Partial<OtpResponse>): OtpResponse {
-    return {
-      success: true,
-      ...data,
-    } as OtpResponse;
+  ) {
+    super();
   }
 
   @Post('/auth/otp')
@@ -44,8 +40,10 @@ export class OtpsController {
       await this.otpsService.delete(createOtpDto.phone);
     }
 
-    const code = Math.floor(100000 + Math.random() * 900000);
-    await this.otpsService.set(createOtpDto.phone, code, RETRY_DELAY);
+    const { code } = await this.otpsService.create(
+      createOtpDto.phone,
+      RETRY_DELAY,
+    );
 
     const isDev = this.config.get('NODE_ENV') !== 'production';
     if (isDev) {
