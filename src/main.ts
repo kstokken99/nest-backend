@@ -5,7 +5,6 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
-import { join } from 'path';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const logger = new Logger('Bootstrap');
@@ -30,14 +29,9 @@ async function bootstrap() {
   );
 
   const restConfig = new DocumentBuilder()
-    .setTitle('@a.ivanov backend 🚀')
-    .setDescription('Апишка для практики')
+    .setTitle('OTP Microservice')
+    .setDescription('Микросервис для работы с OTP кодами')
     .setVersion('1.0')
-    .addBearerAuth({
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-    })
     .build();
 
   SwaggerModule.setup(
@@ -45,9 +39,6 @@ async function bootstrap() {
     app,
     SwaggerModule.createDocument(app, restConfig),
   );
-
-  app.setBaseViewsDir(join(__dirname, 'static/views'));
-  app.setViewEngine('hbs');
 
   const port = config.get<number>('PORT') ?? 3000;
   await app.listen(port);
