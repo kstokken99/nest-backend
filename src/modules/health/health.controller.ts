@@ -1,22 +1,16 @@
-import { Controller, Get } from '@nestjs/common';
-import {
-  HealthCheck,
-  HealthCheckService,
-  MongooseHealthIndicator,
-} from '@nestjs/terminus';
+import { Controller, Get, Inject } from '@nestjs/common';
+import { Redis } from 'ioredis';
 
 @Controller('health')
 export class HealthController {
-  constructor(
-    private health: HealthCheckService,
-    private mongooseHealth: MongooseHealthIndicator,
-  ) {}
+  constructor(@Inject('REDIS_CLIENT') private redis: Redis) {}
 
   @Get()
-  @HealthCheck()
-  checkJson() {
-    return this.health.check([
-      async () => this.mongooseHealth.pingCheck('mongodb'),
-    ]);
+  async check() {
+    const result = await this.redis.ping();
+    return {
+      status: result === 'PONG' ? 'up' : 'down',
+      redis: result === 'PONG' ? 'ok' : 'error',
+    };
   }
 }
